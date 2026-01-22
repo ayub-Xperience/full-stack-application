@@ -15,7 +15,10 @@ function App() {
   return (
     <>
     <TestUser />
-     <div>{data.user.map((users) => <h1>{users.name}</h1>)}</div>
+     <div>
+      {data.user.map((users) => <h1>{users.name}</h1>)}
+      {data.user.map((users) => <h1>{users.email}</h1>)}
+      </div>
     </>
    
   );
