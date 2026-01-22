@@ -26,6 +26,6 @@ export const register = async (req, res, next) => {
 };
 
 export const getUsers = async (req, res, next) => {
-  const user = await User.find();
+  const user = await User.find().sort({ createdAt: -1})
   res.json({ user });
 };
