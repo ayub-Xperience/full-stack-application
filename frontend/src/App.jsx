@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router";
 import { LoginPage } from "./Pages/auth/loginPage";
