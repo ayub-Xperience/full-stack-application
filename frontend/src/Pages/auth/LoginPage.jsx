@@ -1,3 +1,4 @@
+import { LoginForm } from "@/components/ui/auth/LoginForm";
 import { RegisterForm } from "@/components/ui/auth/RegisterForm";
 import React from "react";
 
@@ -11,7 +12,7 @@ export const LoginPage = () => {
             <p>we're glad see you again</p>
           </div>
           {/* registration form  */}
-          <RegisterForm />
+          <LoginForm />
         </div>
       </div>
     // </div>

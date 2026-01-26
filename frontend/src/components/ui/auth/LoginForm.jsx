@@ -12,31 +12,33 @@ import { Button } from "../button";
 import { useFormStatus } from "react-dom";
 import { useNavigate } from "react-router";
 
-function SubmitButton () {
-    const {pending} = useFormStatus()
+function SubmitButton() {
+  const { pending } = useFormStatus();
 
-    return (
-    <Button type='submit' className={'w-full cursor-pointer'}>
-        {pending ? (<span className="flex items-center gap-2"><Loader /> Creating account...</span>) : ('Create Account')}
+  return (
+    <Button type="submit" className={"w-full cursor-pointer"}>
+      {pending ? (
+        <span className="flex items-center gap-2">
+          <Loader /> Creating account...
+        </span>
+      ) : (
+        "Create Account"
+      )}
     </Button>
-    )
+  );
 }
 
-export const RegisterForm = () => {
-    const navigate = useNavigate()
+export const LoginForm = () => {
+  const navigate = useNavigate();
   return (
     <Card className="w-full border-border">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-xl text-center">Create an account</CardTitle>
+        <CardTitle className="text-xl text-center">Signin</CardTitle>
         <CardDescription className="text-center">
-          Enter your details to register
+          Enter your credentails to access your accont
         </CardDescription>
         <form>
           <CardContent>
-            <div className="space-y-2 pt-0">
-              <div className="text-sm font-medium text-left">Full Name</div>
-              <Input name="name" placeholder="john Doe" required />
-            </div>
             <div className="space-y-2 pt-0">
               <div className="text-sm font-medium text-left">Eamil</div>
               <Input name="email" placeholder="email@gmail.com" required />
@@ -45,19 +47,23 @@ export const RegisterForm = () => {
               <div className="text-sm font-medium text-left">password</div>
               <Input name="password" placeholder="******" required />
             </div>
-            <div className="space-y-2 pt-0 mb-2">
-              <div className="text-sm font-medium text-left">
-                Confirm password
-              </div>
-              <Input name="password" placeholder="******" required />
+
+            <div className="py-4">
+              <SubmitButton />
             </div>
-           <div className="py-4">
-             <SubmitButton />
-           </div>
           </CardContent>
           <div>
             <CardFooter className={"flex justify-center pt-0"}>
-                <div className="text-center text-sm">already have an account ? <a onClick={() => navigate('/login')} className="text-primary hover:underline cursor-pointer">Sign in</a></div>
+              <div className="text-center text-sm">
+                {" "}
+                Don't have an account ?{" "}
+                <a
+                  onClick={() => navigate("/register")}
+                  className="text-primary hover:underline cursor-pointer"
+                >
+                  Sign up
+                </a>
+              </div>
             </CardFooter>
           </div>
         </form>
