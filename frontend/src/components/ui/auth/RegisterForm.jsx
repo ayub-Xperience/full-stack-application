@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import api from "@/lib/api/apiClient";
+import { extractErrorMessages } from "@/util/errorUtils";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
@@ -27,26 +28,15 @@ export const RegisterForm = () => {
 
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
-      const response = await api.post(
-        "/user/",
-        userData,
-      );
+      const response = await api.post("/user/", userData);
       console.log("response data", response);
       return response.data;
     },
     onSuccess: (data) => {
-     navigate('/login')
+      navigate("/login");
     },
     onError: (error) => {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("An error occurred during registration");
-      }
+       setError(extractErrorMessages(error));
     },
   });
 
