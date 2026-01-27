@@ -12,22 +12,54 @@ import { Button } from "../button";
 
 import { useNavigate } from "react-router";
 import { Loader } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import api from "@/lib/api/apiClient";
+import { extractErrorMessages } from "@/util/errorUtils";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
+  const [error, setError] = useState();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
       [name]: value,
+    });
+  };
+
+  const loginMutation = useMutation({
+    mutationFn: async (Credentials) => {
+      const response = await api.post("/user/login", Credentials);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // todo : handle token
+      // navigate("/dashboard");
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+      setError(extractErrorMessages(error));
+    },
+  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!formValues.email || !formValues.password) {
+      setError("All fields are required ");
+      return;
+    }
+    loginMutation.mutate({
+      email: formValues.email,
+      password: formValues.password,
     });
   };
 
@@ -38,9 +70,15 @@ export const LoginForm = () => {
         <CardDescription className="text-center">
           Enter your credentails to access your accont
         </CardDescription>
-        <form>
+        <form onSubmit={handleSubmit}>
           <CardContent>
             <div className="space-y-2 pt-0">
+              {error && (
+                <div className="p-3 bg-destructive/10 text-destructive text-sm rounded-md">
+                  {error}
+                </div>
+              )}
+
               <div className="text-sm font-medium text-left">Eamil</div>
               <Input
                 name="email"
