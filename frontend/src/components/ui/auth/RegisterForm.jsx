@@ -11,7 +11,6 @@ import { Input } from "../input";
 import { Button } from "../button";
 import { replace, useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { Loader } from "lucide-react";
 import api from "@/lib/api/apiClient";
 import { extractErrorMessages } from "@/util/errorUtils";
