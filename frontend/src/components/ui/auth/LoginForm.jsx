@@ -15,10 +15,13 @@ import { Loader } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api/apiClient";
 import { extractErrorMessages } from "@/util/errorUtils";
+import useAuthStore from "@/lib/store/authStore";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { setAuth } = useAuthStore()
 
   const [formValues, setFormValues] = useState({
     email: "",
@@ -41,8 +44,13 @@ export const LoginForm = () => {
     },
     onSuccess: (data) => {
       // todo : handle token
-      // navigate("/dashboard");
-      console.log(data);
+      if (data.token) {
+        const user = data.user;
+        const token = data.token;
+
+        setAuth(user, token)
+        navigate('/dashboard')
+      }
     },
     onError: (error) => {
       console.log(error);
