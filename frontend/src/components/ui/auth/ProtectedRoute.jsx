@@ -9,26 +9,29 @@ export const ProtectedRoute = ({ children }) => {
   const {setAuth, clearAuth, token} = useAuthStore();
 
   const location = useLocation();
+
   const { data, error, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      const response = await api.get("/auth/profile", {
+      const response = await api.get("/auth/profile",{
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+            Authorization: `Bearer jdhfsdjh`
+        }
+      })
       return response.data;
     },
-    enabled: !token,
     retry: 1,
   });
+   if (!token) {
+    return <Navigate to={"/login"} state={{ from: location }} replace />;
+  }
 
   //   error case
   useEffect(() => {
-    if (isError) {
+    if (isError && data ) {
       clearAuth();
     }
-  }, [isError, error, clearAuth]);
+  }, [isError, error, data, clearAuth]);
   // success case
   useEffect(() => {
     setAuth(data, token);
