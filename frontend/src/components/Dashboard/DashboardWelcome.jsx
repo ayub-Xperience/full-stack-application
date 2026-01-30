@@ -9,7 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { CardStatus } from "./CardStatus";
 
-export const DashboardWelcome = () => {
+export const DashboardWelcome = ({showCreateForm}) => {
   return (
     <Card
       className={
