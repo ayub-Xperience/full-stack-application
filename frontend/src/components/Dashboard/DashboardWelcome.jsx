@@ -9,7 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { CardStatus } from "./CardStatus";
 
-export const DashboardWelcome = () => {
+export const DashboardWelcome = ({  onCreateTask, showCreateFoarm}) => {
   return (
     <Card
       className={
@@ -25,7 +25,8 @@ export const DashboardWelcome = () => {
             </CardDescription>
           </div>
           {/* todo: create new task */}
-          <Button>Create New Task</Button>
+          <Button
+          onClick={  onCreateTask}>Create New Task</Button>
         </div>
       </CardHeader>
 
