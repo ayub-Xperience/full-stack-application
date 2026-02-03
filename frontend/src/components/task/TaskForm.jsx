@@ -20,6 +20,7 @@ import {
 import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api/apiClient";
+import useAuthStore from "@/lib/store/authStore";
 
 export const TaskForm = ({ open = true, onOpenChange }) => {
   const [formValues, setFormValue] = useState({
@@ -28,6 +29,9 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
     status: "pending",
     dueDate: "",
   });
+
+  const {token} = useAuthStore()
+  const [validationError, setValidationError] = useState(null)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -56,19 +60,37 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
 
   const createTaskMutation = useMutation({
     mutationFn: async (taskData) => {
-        const response = await api.post()
+        const response = await api.post('/todo/', taskData, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        return response.data
     },
     onSuccess: (data) => {
+      console.log("Task Created successfuly:", data)
 
     },
     onError: (error) => {
-
+          console.log('Error creating task:', error);
     }
 
   })
+        const handleSubmit = (e) => {
+          e.preventDefault()
 
-
-
+          if(!formValues.title) {
+            setValidationError('Title is required')
+            return
+          }
+          const taskData = {
+            title :  formValues.title.trim(),
+            description: formValues.description.trim(),
+            status: formValues.status,
+            dueDate : formValues.dueDate ? new Date (formValues.dueDate).toISOString() : null
+          }
+          createTaskMutation.mutate(taskData)
+        }
 
 
 
@@ -83,7 +105,7 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
             Fill in the details below to create a new task
           </DialogDescription>
         </DialogHeader>
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label>Title *</Label>
             <Input

@@ -3,13 +3,13 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
-import UserRouter from "../backend/routes/task.js";
+import UserRouter from "./routes/task.js";
 import getUsers from "./routes/users.js";
 import { notFound } from "./middleware/noFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import authProtect from './routes/auth.js'
 import authAdmin from './routes/admin.js'
-import createdTask from './routes/todoTask.js'
+import testPage from './routes/taskTodo.js'
 
 dotenv.config(); //
 
@@ -26,13 +26,13 @@ app.use(
   }),
 );
 
-app.use(express.json());
+app.use(express.json()); 
 
 app.use("/api/user", UserRouter);
 app.use("/api/users", getUsers);
 app.use("/api/auth", authProtect);
 app.use("/api/admin", authAdmin);
-app.use("/api/todo", createdTask);
+app.use('/api/tasks', testPage)
 
 app.use(notFound);
 app.use(errorHandler);
