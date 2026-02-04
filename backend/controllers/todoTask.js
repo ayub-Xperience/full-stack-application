@@ -7,3 +7,14 @@ export const createTask = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getMyTasks = async (req, res, next) => {
+  try {
+    const task = await Task.find({ createdBy: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(task);
+  } catch (error) {
+    next(error);
+  }
+};
