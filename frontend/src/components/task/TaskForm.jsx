@@ -60,11 +60,7 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
 
   const createTaskMutation = useMutation({
     mutationFn: async (taskData) => {
-      const response = await api.post("/tasks/", taskData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.post("/tasks/", taskData);
       return response.data;
     },
     onSuccess: (data) => {
