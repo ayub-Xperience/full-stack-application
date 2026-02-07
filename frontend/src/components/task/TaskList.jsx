@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/Badge";
+import { TaskCard } from "./TaskCard";
 
 export const TaskList = ({
   tasks = [],
@@ -25,6 +26,33 @@ export const TaskList = ({
   const [seachTerm, setSearchTerm] = useState("");
 
   const stats = getTaskStatus();
+
+  const TaskGrid = ({ tasks, emptyMessage }) => {
+    if (tasks.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <div className="mx-auto max-w-md">
+            <ClipboardCheck className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h2 className="mt-4 text-sm text-foreground">No tasks found</h2>
+            <p className="mt-2 text-sm text-foreground">{emptyMessage}</p>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {tasks.map((task) => (
+          <TaskCard
+            key={task._id}
+            task={task}
+            onDelete={onDelete}
+            onEdite={onEdite}
+            onStatusChange={onStatusChange}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -98,7 +126,9 @@ export const TaskList = ({
             <Badge variant="secondary">{stats.completed}</Badge>
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="all">All tasks</TabsContent>
+        <TabsContent value="all">
+            <TaskGrid />
+        </TabsContent>
         <TabsContent value="pending">Pending Tasks</TabsContent>
         <TabsContent value="inProgress">in progress Tasks</TabsContent>
         <TabsContent value="completed">Completed Tasks</TabsContent>
