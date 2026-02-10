@@ -33,14 +33,28 @@ export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email });
 
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
     const token = generateToken(user._id);
     res.json({ token });
   } catch (error) {
-   next(error)
+    next(error);
+  }
+};
+
+export const updateTask = async (req, res, next) => {
+  try {
+    const task = await User.findOneAndUpdate(
+      { _id: req.params.id, createdBy: req.user._id },
+      req.body,
+      { new: true }
+    );
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+    res.json(task);
+  } catch (error) {
+    next(error);
   }
 };

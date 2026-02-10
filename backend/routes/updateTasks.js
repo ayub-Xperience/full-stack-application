@@ -6,8 +6,7 @@ import { taskValidationSchema } from "../Schema/taskSchema.js";
 import { updateTask } from "../controllers/task.js";
 const router = express.Router();
 
-router.post("/", protect, validate(taskValidationSchema), createTask);
 
-router.post("/".protect, validate(taskValidationSchema), updateTask);
+router.put("/:id", protect, validate(taskValidationSchema), updateTask);
 
 export default router;
