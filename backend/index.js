@@ -11,6 +11,7 @@ import authAdmin from "./routes/admin.js";
 import TaskRouter from './routes/userTask.js'
 import AllTasks from './routes/GetMyTasks.js'
 import updateTask from './routes/updateTasks.js'
+import DeleteTask from './routes/TaskDelete.js'
 
 dotenv.config(); //
 const app = express();
@@ -33,6 +34,7 @@ app.use("/api/admin", authAdmin);
 app.use("/api/tasks", TaskRouter)
 app.use('/api/allTask', AllTasks )
 app.use('/api/update', updateTask )
+app.use('/api/delete', DeleteTask )
 
 app.use(notFound);
 app.use(errorHandler);
