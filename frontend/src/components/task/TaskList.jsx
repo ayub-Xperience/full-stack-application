@@ -8,7 +8,7 @@ import { TaskCard } from "./TaskCard";
 export const TaskList = ({
   tasks = [],
   isLaoding = false,
-  onEdite,
+  onEdit,
   onDelete,
   onStatusChange,
 }) => {
@@ -55,8 +55,7 @@ export const TaskList = ({
           <TaskCard
             key={task._id}
             task={task}
-            onDelete={onDelete}
-            onEdite={onEdite}
+            onEdit={onEdit}
             onStatusChange={onStatusChange}
           />
         ))}

@@ -8,7 +8,28 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { Calendar, CloudFog, Edit2, MoreVertical, Trash, Trash2 } from "lucide-react";
+import {
+  Calendar,
+  CloudFog,
+  Edit2,
+  Loader,
+  MoreVertical,
+  Trash,
+  Trash2,
+} from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api/apiClient";
+import { toast } from "sonner";
 
 const STATUS_CONFIG = {
   pending: {
@@ -28,7 +49,7 @@ const STATUS_CONFIG = {
   },
 };
 
-export const TaskCard = ({ task, onEdite, onDelete, isLoading = false }) => {
+export const TaskCard = ({ task, onEdit, isLoading = false }) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -44,12 +65,38 @@ export const TaskCard = ({ task, onEdite, onDelete, isLoading = false }) => {
   };
 
   const isOverdue = (dueDate) => {
-    if(!dueDate || task.status === "Completed") return false
-    return new Date(dueDate) < new Date()
-  }
+    if (!dueDate || task.status === "Completed") return false;
+    return new Date(dueDate) < new Date();
+  };
 
-  const dueDate = formatDate(task.dueDate)
-  const overdue = isOverdue(task.dueDate)
+  const dueDate = formatDate(task.dueDate);
+  const overdue = isOverdue(task.dueDate);
+
+  const queryCleint = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.delete(`/delete/${task._id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryCleint.invalidateQueries(["tasks"]);
+      toast.success("Tast Deleted succesfully ");
+    },
+    onError: (error) => {
+      toast.error("Error deleting task", error);
+    },
+  });
+
+  const handleDeleteConfrim = async () => {
+    try {
+      await deleteMutation.mutateAsync(task._id);
+    } catch (error) {
+      setShowDeleteDialog(false);
+      console.log("Error cinfirming delete:", error);
+      toast.error(`Error cinfirming delete:, ${error.message}`);
+    }
+  };
 
   return (
     <>
@@ -71,13 +118,19 @@ export const TaskCard = ({ task, onEdite, onDelete, isLoading = false }) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                  onClick={()=> onEdit(task)}   
+                  >
                     <Edit2 className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
                     <Trash className="mr-2 h-4 w-4" />
-                    Delete
+                    {deleteMutation.isPending ? (
+                      <span className="flex items-center ga-2">
+                        <Loader size={'sm'} />
+                        Deleting...</span>
+                    ) : ('Delete')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -93,34 +146,52 @@ export const TaskCard = ({ task, onEdite, onDelete, isLoading = false }) => {
           )}
 
           {/* due date */}
-          {
-            dueDate && (
-              <div className="flex  items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Due:</span>
-                  <Badge
-                  variant={overdue ? "destructive" : "outline"}
-                  className="text-xs"
-                  >
-                        {dueDate}
-                        {overdue && ' (Overdue) '}
-                  </Badge>
-              </div>
-            )
-          }
+          {dueDate && (
+            <div className="flex  items-center gap-2">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Due:</span>
+              <Badge
+                variant={overdue ? "destructive" : "outline"}
+                className="text-xs"
+              >
+                {dueDate}
+                {overdue && " (Overdue) "}
+              </Badge>
+            </div>
+          )}
 
           {/* Simple status indicator */}
 
           <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
             <span>Create: {formatDate(task.createdAt)}</span>
-            <span className={statusConfig.color}>
-              {
-                statusConfig.label
-              }
-            </span>
+            <span className={statusConfig.color}>{statusConfig.label}</span>
           </div>
         </CardContent>
       </Card>
+
+      {/*  */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are You sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permenently delete the
+              task" {task.title}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfrim}
+              className={
+                "bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+              }
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

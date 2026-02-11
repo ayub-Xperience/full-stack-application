@@ -20,8 +20,6 @@ export const DashboardPage = () => {
     setShowCreateFoarm(true);
   };
 
-
-
   const taskQuery = useQuery({
     queryKey: ["tasks"],
     queryFn: async () => {
@@ -32,17 +30,11 @@ export const DashboardPage = () => {
   });
 
   const handleEditeTask = (task) => {
-    setEditingTask(task)
+    setEditingTask(task);
     setShowCreateFoarm(true)
-  }
-    const handleDeleteTask = async (taskId) => {
-      // todo Mutation to delete task
-    }
+  };
 
-    const handleStatusChange = async (taskId, statusData) => {
-
-    }
-
+  const handleStatusChange = async (taskId, statusData) => {};
 
   if (taskQuery.isLoading) {
     return (
@@ -65,15 +57,16 @@ export const DashboardPage = () => {
         {/* tasks section */}
         <div>
           <TaskList
-          tasks={taskQuery.data || []}
-          isLoading={taskQuery.isLoading}
-          onEdit={handleEditeTask}
-          onDelete={handleDeleteTask}
-          onStatusChange={handleStatusChange}
-           />
+            tasks={taskQuery.data || []}
+            isLoading={taskQuery.isLoading}
+            onEdit={handleEditeTask}
+  
+            onStatusChange={handleStatusChange}
+          />
         </div>
       </main>
       <TaskForm
+       task={edtingTask}
         open={showCreateFoarm || !!edtingTask}
         onOpenChange={handleFormClose}
       />

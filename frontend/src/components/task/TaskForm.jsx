@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api/apiClient";
 import useAuthStore from "@/lib/store/authStore";
 
-export const TaskForm = ({ open = true, onOpenChange }) => {
+export const TaskForm = ({ task, open = true, onOpenChange }) => {
   const [formValues, setFormValue] = useState({
     title: "",
     description: "",
@@ -32,6 +32,25 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
 
   const { token } = useAuthStore();
   const [validationError, setValidationError] = useState(null);
+
+    useEffect(()=> {
+      if(task) {
+       setFormValue({
+        title: task.title || "",
+        description: task.description || "",
+        status: task.status || 'pending',
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ""
+       })
+      }else {
+        setFormValue({
+          title: "",
+          description: "",
+          status: "pending",
+          dueDate: ""
+        })
+      }
+    
+  },[task, open])
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -55,6 +74,8 @@ export const TaskForm = ({ open = true, onOpenChange }) => {
   const handleCencel = () => {
     onOpenChange?.(false);
   };
+
+
 
   // create task mutation
 
