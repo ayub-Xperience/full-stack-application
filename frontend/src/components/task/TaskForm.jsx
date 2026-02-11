@@ -29,8 +29,6 @@ export const TaskForm = ({ task, open = true, onOpenChange }) => {
     status: "pending",
     dueDate: "",
   });
-
-  const { token } = useAuthStore();
   const [validationError, setValidationError] = useState(null);
 
     useEffect(()=> {
