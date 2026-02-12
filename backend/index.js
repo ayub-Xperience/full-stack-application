@@ -12,9 +12,12 @@ import TaskRouter from "./routes/userTask.js";
 import AllTasks from "./routes/GetMyTasks.js";
 import updateTask from "./routes/updateTasks.js";
 import DeleteTask from "./routes/TaskDelete.js";
+import helmet from "helmet";
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './utils/swagger.js';
 
 import path from "path";
-import { fileURLToPath, pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 
 dotenv.config(); //
 const app = express();
@@ -23,11 +26,13 @@ const PORT = process.env.PORT || 2000;
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+app.use(helmet());
 app.use(
   cors({
     origin: ["http://localhost:5173"],
   }),
 );
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(express.json());
 
