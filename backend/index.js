@@ -14,7 +14,7 @@ import updateTask from "./routes/updateTasks.js";
 import DeleteTask from "./routes/TaskDelete.js";
 import helmet from "helmet";
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './utils/swagger.js';
+import { swaggerSpec } from './util/swagger.js'
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -32,7 +32,7 @@ app.use(
     origin: ["http://localhost:5173"],
   }),
 );
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(express.json());
 
