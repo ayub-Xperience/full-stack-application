@@ -52,17 +52,18 @@ app.use("/api/update", updateTask);
 app.use("/api/delete", DeleteTask);
 
 // Server frontend in Production
-if (process.env.NODE_ENV === "production") {
 
+if (process.env.NODE_ENV === "production") {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    // Static files
+    const frontendPath = path.join(__dirname, '../frontend/build');
+    app.use(express.static(frontendPath));
 
-    // Serve the frontend app
-
-    app.get(/.*/, (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-    })
+    // Catch-all route
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+    });
 }
 
 
