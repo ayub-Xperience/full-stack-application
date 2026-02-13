@@ -1,5 +1,5 @@
 - [✅] Github Initialization
 - [✅] MongoDB Atlas
-- [] Render deployment
-- [] Enviroment variables
+- [✅] Render deployment
+- [✅] Enviroment variables
 - [✅] gitignore
