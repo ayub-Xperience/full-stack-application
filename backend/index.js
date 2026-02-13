@@ -49,13 +49,15 @@ app.use("/api/delete", DeleteTask);
 
 // Server frontend in Production
 if (process.env.NODE_ENV === "production") {
-  const __dirname = path.dirname(fileURLToPath)(import.meta.url);
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.get(/.*/, (req, res) => {
     res.send(path.join(__dirname, "..", "frontend", "dist", "index.html"));
   });
 }
+
+
 
 app.use(notFound);
 app.use(errorHandler);
