@@ -18,6 +18,7 @@ import { swaggerSpec } from './util/swagger.js'
 
 import path from "path";
 import { fileURLToPath } from "url";
+import { limiter } from "./middleware/rateLimter.js";
 
 dotenv.config(); //
 const app = express();
@@ -32,6 +33,8 @@ app.use(
     origin: ["http://localhost:5173"],
   }),
 );
+
+app.use(limiter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(express.json());
